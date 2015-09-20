@@ -1,10 +1,12 @@
 import spot
+from observ import Observable
 
 mirror = 1
 
-class Field(object):
+class Field(Observable):
 
     def __init__(self,screen,rows,cols,width,height,color):
+        Observable.__init__(self)
         self.rows = rows
         self.cols = cols
         self.matrix = [[0]*cols for i in range(rows)]
@@ -12,6 +14,7 @@ class Field(object):
             for c in range(0,cols):
                 makulo = spot.Spot(width/cols,height/rows,(width/cols*c,height/rows*r),color,0)
                 self.matrix[r][c] = makulo
+                makulo.subscribe(self.discharge)
                 makulo.draw()
                 makulo.blit(screen)
 
@@ -57,6 +60,7 @@ class Field(object):
             not self.is_corner(row,col) and
             row==0 or col==0 or col==self.cols-1 or row==self.rows-1)#
 
+    # ne perdu energion che la rando, sed reflektu ghin
     def propagate_mirror(self,row,col):
         if self.is_corner(row,col):
             pval = self.matrix[row][col].value/3
@@ -66,6 +70,7 @@ class Field(object):
             pval = self.matrix[row][col].value/8
         self.prop_to_neigh(row,col,pval)
 
+    # ne reflektighu che la rando sed perdu tie energion    
     def propagate_cease(self,row,col):
         pval = self.matrix[row][col].value/8
         self.prop_to_neigh(row,col,pval)
@@ -80,7 +85,7 @@ class Field(object):
         
         for r in range(0,self.rows):
             for c in range(0,self.cols):
-                self.matrix[r][c].update() # update 
+                self.matrix[r][c].update(r,c) # update 
 
     def dump(self):
         #print("------------------------------------")
@@ -89,3 +94,7 @@ class Field(object):
                 print(str(self.matrix[r][c].value) + " "),
             print()
         print("------------------------------------")
+
+    def discharge(self,event):
+        self.fire(event=event)
+        #{name: "play", row: r, col: c, impuls: 1.0})

@@ -8,6 +8,9 @@ from pygame.locals import *
 
 import spot
 import field
+from i_sine import Sine
+from i_fm import Fm
+from transmit import Transmitter
 
 if not pygame.font: print('Averto, tiparoj neaktivaj')
 if not pygame.mixer: print('Averto: sono malŝaltita')
@@ -38,6 +41,8 @@ def main():
     # preparu objektojn
     clock = pygame.time.Clock()
     fld = field.Field(screen,rows,cols,width,height,(200,60,90))
+    instr = Fm(rows,cols)
+    tr = Transmitter(fld,instr)
     pygame.display.flip()
 
     # fld.setValue(1,2,1.2)

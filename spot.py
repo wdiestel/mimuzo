@@ -1,10 +1,13 @@
 import pygame
 import math
+from observ import *
 
 maxval = 10
+threshold = 0.1
 
-class Spot(object):
+class Spot(Observable):
   def __init__(self,sizeX,sizeY,pos,color,value):
+    Observable.__init__(self)
     self.sizeY = sizeY
     self.sizeX = sizeX
     self.color = color
@@ -32,15 +35,27 @@ class Spot(object):
   def add(self,pval):
     self.addval += pval
 
-  def update(self):
+  def update(self,r,c):
    self.value = self.value + self.addval
    self.addval = 0
+   # print "value "+str(r)+", "+str(c)+": "+str(self.value)
    if self.value > maxval:
        self.value = maxval
+   if self.value > threshold:
+     self.discharge(r,c)
    self.draw()
 
   def blit(self, background):
       """blit the Ball on the background"""
       background.blit(self.surface, self.position)
 
-
+  def discharge(self,r,c):
+    print "discharge "+str(r) + "," + str(c)
+    i = threshold
+    e = Event()
+    e.name = "discharge"
+    e.row = r
+    e.col = c
+    e.impuls = i
+    self.fire(e)
+    self.value -= i
