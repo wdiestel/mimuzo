@@ -32,6 +32,14 @@ class Field(Observable):
         spot = self.matrix[row][col]
         spot.setValue(spot.value + cvalue)
 
+    def charge_all(self,values):
+        for r in range(0,self.rows):
+            for c in range(0,self.cols):
+                #self.matrix[r][c].draw()
+                spot = self.matrix[r][c]
+                if values[c][r] > 50:
+                    spot.setValue(spot.value + values[c][r]/255)
+
     def prop_(self,row,col,val):
         if row>=0 and col>=0 and row<self.rows and col<self.cols:
            spot = self.matrix[row][col]
