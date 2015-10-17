@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import cProfile
+
 import os, sys
 import time
 import pygame
@@ -11,15 +13,16 @@ import field
 #from i_sine import Sine
 #from i_fm import Fm
 #from sonic import Sonic
-from i_synth import Synth
+#from i_synth import Synth
+from i_synth_ctl import SynthCtl
 from transmit import Transmitter
 from movado import CamMoves
 
 if not pygame.font: print('Averto, tiparoj neaktivaj')
 if not pygame.mixer: print('Averto: sono malŝaltita')
 
-cols=8
-rows=6
+cols=3
+rows=2
 
 # screen size
 height = 600
@@ -28,6 +31,7 @@ width = 800
 # cam size
 cam_size = (640,480)
 
+frequence = 10 # kiom ofte en sekundo trakuri la tuton
 
 def main():
     """ĉefa funkcio, kiu rulas ĉion"""
@@ -44,12 +48,15 @@ def main():
     screen.blit(bg,(0,0))
     # pygame.display.flip()
 
+####
     # preparu objektojn
     clock = pygame.time.Clock()
     fld = field.Field(screen,rows,cols,width,height,(200,60,90))
-    instr = Synth("growl",rows,cols)
+    #instr = SynthCtl("pnoise",rows,cols)
+    instr = SynthCtl("sine",rows,cols)
+
     # FIXME ne funkcias tiel, momente mem lanchu jackd kaj sonic-pi mane...
-    instr.jack_in()
+    #instr.jack_in()
 
     tr = Transmitter(fld,instr)
     pygame.display.flip()
@@ -58,12 +65,12 @@ def main():
 
     # fld.setValue(1,2,1.2)
 
-    while 10:
-        clock.tick(3)
+    while 1:
+        clock.tick(frequence)
 
         diff = moves.get_diff()
         values = moves.get_values(rows,cols)
-        print values
+        # print values
 
         fld.charge_all(values)
         fld.propagate_all()   

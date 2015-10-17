@@ -1,3 +1,5 @@
+import cProfile
+
 import pygame
 import pygame.camera
 from pygame.locals import *
@@ -20,6 +22,9 @@ class Capture(object):
             raise ValueError("Ne trovis kameraron.")
         self.cam = pygame.camera.Camera(self.clist[0], self.size)
        
+
+#v4l2-ctl -c exposure_auto_priority=0
+
         self.cam.start()
         #self.cam.set_controls(hflip=True, vflip=False)
         print self.cam.get_controls()
@@ -54,4 +59,5 @@ class Capture(object):
 
 
 capture = Capture()
-capture.main()
+cProfile.run('capture.main()')
+

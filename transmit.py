@@ -9,3 +9,5 @@ class Transmitter(object):
     def transmit(self,event):
         if event.name == "discharge":
             self.instrument.play(event.row,event.col,event.impuls)
+        elif event.name == "update":
+            self.instrument.modify(event.row,event.col,event.value)

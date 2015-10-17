@@ -2,8 +2,9 @@ import pygame
 import math
 from observ import *
 
+minval = 0
 maxval = 10
-threshold = 0.1
+threshold = 0.4
 
 class Spot(Observable):
   def __init__(self,sizeX,sizeY,pos,color,value):
@@ -30,6 +31,10 @@ class Spot(Observable):
 
   def setValue(self,value):
     self.value = value
+    if self.value < minval:
+      self.value = minval
+    if self.value > maxval:
+     self.value = maxval
     self.draw()
 
   def add(self,pval):
@@ -40,9 +45,12 @@ class Spot(Observable):
    self.addval = 0
    # print "value "+str(r)+", "+str(c)+": "+str(self.value)
    if self.value > maxval:
-       self.value = maxval
+     self.value = maxval
+   if self.value < minval:
+     self.value = minval
    if self.value > threshold:
      self.discharge(r,c)
+   self.sendVal(r,c)
    self.draw()
 
   def blit(self, background):
@@ -59,3 +67,14 @@ class Spot(Observable):
     e.impuls = i
     self.fire(e)
     self.value -= i
+
+  def sendVal(self,r,c):
+    # print "update "+str(r) + "," + str(c) + ":" + str(self.value)
+    #i = threshold
+    e = Event()
+    e.name = "update"
+    e.row = r
+    e.col = c
+    e.value = self.value
+    self.fire(e)
+    #self.value -= i
