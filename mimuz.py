@@ -9,7 +9,7 @@ import pygame
 from pygame.locals import *
 
 import spot
-import field
+from statfield import StaticField
 #from i_sine import Sine
 #from i_fm import Fm
 #from sonic import Sonic
@@ -21,8 +21,8 @@ from movado import CamMoves
 if not pygame.font: print('Averto, tiparoj neaktivaj')
 if not pygame.mixer: print('Averto: sono malŝaltita')
 
-cols=3
-rows=2
+cols=4
+rows=3
 
 # screen size
 height = 600
@@ -51,9 +51,15 @@ def main():
 ####
     # preparu objektojn
     clock = pygame.time.Clock()
-    fld = field.Field(screen,rows,cols,width,height,(200,60,90))
+    fld = StaticField(screen,rows,cols,width,height,(200,60,90))
+    
     #instr = SynthCtl("pnoise",rows,cols)
-    instr = SynthCtl("sine",rows,cols)
+    #fld.charge_factor = 0.1
+
+    #instr = SynthCtl("sine",rows,cols)
+    instr = SynthCtl("fm",rows,cols)
+    fld.charge_factor = 0.4
+    spot.threshold = 99 # ne sencharghighu en tiu konstelacio
 
     # FIXME ne funkcias tiel, momente mem lanchu jackd kaj sonic-pi mane...
     #instr.jack_in()
@@ -62,6 +68,10 @@ def main():
     pygame.display.flip()
 
     moves = CamMoves((width,height),cam_size)
+
+    clock.tick(frequence)
+    diff = moves.get_diff() # unuan diferencbildon ignoru char chio aperas nove
+    values = moves.get_values(rows,cols)
 
     # fld.setValue(1,2,1.2)
 

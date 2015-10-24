@@ -4,7 +4,7 @@ from observ import *
 
 minval = 0
 maxval = 10
-threshold = 0.4
+threshold = 0.4 # je tiu valoro la makulo discharghigas, t.e. perdas sian energion 
 
 class Spot(Observable):
   def __init__(self,sizeX,sizeY,pos,color,value):
