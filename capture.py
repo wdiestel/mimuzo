@@ -1,4 +1,4 @@
-import cProfile
+#import cProfile
 
 import pygame
 import pygame.camera

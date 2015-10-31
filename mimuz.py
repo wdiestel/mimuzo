@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import cProfile
+# import cProfile
 
 import os, sys
 import time
@@ -29,7 +29,8 @@ height = 600
 width = 800
 
 # cam size
-cam_size = (640,480)
+#cam_size = (640,480)
+cam_size = (320,240)
 
 frequence = 10 # kiom ofte en sekundo trakuri la tuton
 
