@@ -15,8 +15,8 @@ class Spot(Observable):
     self.value = value
     self.position = pos
     self.addval = 0
-    self.surface = pygame.Surface((sizeX,sizeY))
-    #self.surface = self.surface.convert() # for faster blitting. 
+    self.surface = pygame.Surface((sizeX,sizeY),flags=pygame.SRCALPHA)
+    self.surface = self.surface.convert() # for faster blitting. 
   
   def draw(self):
     #pygame.draw.rect(self.surface,(10,10,10),(0,0,self.sizeX,self.sizeY),10)
@@ -27,7 +27,7 @@ class Spot(Observable):
    
     # to avoid the black background, make black the transparent color:
     self.surface.set_colorkey((0,0,0))
-    self.surface = self.surface.convert_alpha() 
+    ### self.surface = self.surface.convert_alpha() 
 
   def setValue(self,value):
     self.value = value
