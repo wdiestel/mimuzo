@@ -14,7 +14,7 @@ from statfield import StaticField
 #from i_fm import Fm
 #from sonic import Sonic
 #from i_synth import Synth
-from i_synth_ctl import SynthCtl
+from i_synth_ctl2 import SynthCtl2
 from transmit import Transmitter
 from movado import CamMoves
 
@@ -32,7 +32,7 @@ width = 800
 #cam_size = (640,480)
 cam_size = (320,240)
 
-frequence = 10 # kiom ofte en sekundo trakuri la tuton
+frequence = 3 # kiom ofte en sekundo trakuri la tuton
 
 def main():
     """ĉefa funkcio, kiu rulas ĉion"""
@@ -58,9 +58,13 @@ def main():
     #fld.charge_factor = 0.1
 
     #instr = SynthCtl("sine",rows,cols)
-    instr = SynthCtl("fm",rows,cols)
+    # instr = SynthCtl2("fm","pretty_bell",rows,cols)
+    instr = SynthCtl2("bnoise","pretty_bell",rows,cols)
+
     fld.charge_factor = 0.4
-    spot.threshold = 99 # ne sencharghighu en tiu konstelacio
+#    spot.threshold_discharge = 99 # ne sencharghighu en tiu konstelacio
+    spot.threshold_discharge = 0.2
+    #### spot.threshold_update = 9999 # evitu shanghon de lauteco provizore
 
     # FIXME ne funkcias tiel, momente mem lanchu jackd kaj sonic-pi mane...
     #instr.jack_in()
