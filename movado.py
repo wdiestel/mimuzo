@@ -43,10 +43,12 @@ class CamMoves(object):
  
         # Surface to hold the camera frame
         self.cam_surface = pygame.Surface(cam_size)
+        bpp = self.cam_surface.get_bytesize()
+        print("cam byte size: "+str(bpp))
         self.mirror = pygame.Surface(screen_size)
         # Make surface compliant with display
-        self.cam_surface = self.cam_surface.convert()
-        self.mirror = self.mirror.convert()
+        self.cam_surface = self.cam_surface.convert(24)
+        self.mirror = self.mirror.convert(24)
         # Array to contain and display pixel brightness differences
         self.blitting_array = np.zeros((cam_size[0],cam_size[1],3),dtype=int)
  
@@ -112,7 +114,7 @@ class CamMoves(object):
             return diff
 
     def get_values(self,rows,cols):
-        scores = pygame.Surface((cols,rows))
+        scores = pygame.Surface((cols,rows),depth=24)
         pygame.transform.scale(self.cam_surface,scores.get_size(),scores)
         scores = pygame.transform.flip(scores,True,False)
         values = np.mean(pygame.surfarray.pixels3d(scores),2)
