@@ -42,13 +42,14 @@ class CamMoves(object):
 #pygame.display.init()
  
         # Surface to hold the camera frame
-        self.cam_surface = pygame.Surface(cam_size)
+        self.cam_surface = pygame.Surface(cam_size,depth=24)
         bpp = self.cam_surface.get_bytesize()
         print("cam byte size: "+str(bpp))
-        self.mirror = pygame.Surface(screen_size)
+        self.mirror = pygame.Surface(screen_size, depth=24)
         # Make surface compliant with display
-        self.cam_surface = self.cam_surface.convert(24)
-        self.mirror = self.mirror.convert(24)
+	if pygame.display.get_init():
+          self.cam_surface = self.cam_surface.convert(24)
+          self.mirror = self.mirror.convert(24)
         # Array to contain and display pixel brightness differences
         self.blitting_array = np.zeros((cam_size[0],cam_size[1],3),dtype=int)
  

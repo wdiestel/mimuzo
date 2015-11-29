@@ -16,7 +16,7 @@ class Field(Observable):
         self.matrix = [[0]*cols for i in range(rows)]
         for r in range(0,rows):
             for c in range(0,cols):
-                makulo = spot.Spot(width/cols,height/rows,(width/cols*c,height/rows*r),color,0)
+                makulo = spot.Spot(screen,width/cols,height/rows,(width/cols*c,height/rows*r),color,0)
                 self.matrix[r][c] = makulo
                 makulo.subscribe(self.onEvent)
                 makulo.draw()

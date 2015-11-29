@@ -93,17 +93,17 @@ def main():
         fld.propagate_all()   
         # fld.dump()
 
-        for event in pygame.event.get():
-            if event.type ==QUIT:
-                return
-            elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                return
-            elif event.type == MOUSEBUTTONDOWN:
-                # pentru...
-                (x,y) = pygame.mouse.get_pos()
-                c = cols * x / width
-                r = rows * y / height
-                fld.charge(r,c,1.0)
+       # for event in pygame.event.get():
+       #     if event.type ==QUIT:
+       #         return
+       #     elif event.type == KEYDOWN and event.key == K_ESCAPE:
+       #         return
+       #     elif event.type == MOUSEBUTTONDOWN:
+       #         # pentru...
+       #         (x,y) = pygame.mouse.get_pos()
+       #         c = cols * x / width
+       #         r = rows * y / height
+       #         fld.charge(r,c,1.0)
 
         # allsprites.update()
         # fld.propagate_all()   

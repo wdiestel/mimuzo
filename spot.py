@@ -5,10 +5,10 @@ from observ import *
 minval = 0
 maxval = 10
 threshold_discharge = 0.4 # je tiu valoro la makulo discharghigas, t.e. perdas sian energion 
-threshold_update = 0.1 # 10% da changho inter value kaj oldvalue kauzas signalon "update"
+threshold_update = 0.2 # 20% da changho inter value kaj oldvalue kauzas signalon "update"
 
 class Spot(Observable):
-  def __init__(self,sizeX,sizeY,pos,color,value):
+  def __init__(self,screen,sizeX,sizeY,pos,color,value):
     Observable.__init__(self)
     self.sizeY = sizeY
     self.sizeX = sizeX
@@ -18,7 +18,8 @@ class Spot(Observable):
     self.position = pos
     self.addval = 0
     self.surface = pygame.Surface((sizeX,sizeY),flags=pygame.SRCALPHA)
-    self.surface = self.surface.convert() # for faster blitting. 
+    if pygame.display.get_init():
+      self.surface = self.surface.convert(screen) # for faster blitting. 
   
   def draw(self):
     #pygame.draw.rect(self.surface,(10,10,10),(0,0,self.sizeX,self.sizeY),10)
