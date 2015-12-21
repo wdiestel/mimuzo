@@ -21,7 +21,7 @@ height = 600
 width = 800
 
 # cam size
-cam_size = (640,480)
+cam_size = (640,480) # uzu tion por YUV!
 #cam_size = (320,320)
 #cam_size = (160,120)
 

@@ -32,10 +32,12 @@ class Field(Observable):
                 #self.matrix[r][c].draw()
                 self.matrix[r][c].blit(screen)
 
+
     # chargas unuopan makulon
     def charge(self,row,col,cvalue):
         spot = self.matrix[row][col]
         spot.setValue(spot.value + cvalue)
+
 
     # transprenas por chiu makulo de valormatrico, ekz. de kameramovado
     def charge_all(self,values):
@@ -44,7 +46,8 @@ class Field(Observable):
                 #self.matrix[r][c].draw()
                 spot = self.matrix[r][c]
                 if values[c][r] > threshold:
-                    spot.setValue(spot.value + values[c][r]/255*charge_factor)
+                    spot.setValue(spot.value + values[c][r]/255.0*charge_factor)
+
 
     def is_corner(self,row,col):
         return (

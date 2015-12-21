@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Dec 23 14:40:44 2012
- 
-@author: lhilbert
+(c) 2015 ĉe Wolfram Diestel
+laŭ GPL 2.0
 """
  
 import pygame as pygame
@@ -10,127 +9,92 @@ import pygame.camera
 import numpy as np
 import numpy.random
  
-from time import sleep
+#from time import sleep
 
-# Initialize pygame
-#pygame.init()
-
-# Initialize pygame camera module
+# Preparu la kameramodulon de "pygame"
 pygame.camera.init()
 
 class CamMoves(object):
     def __init__(self,screen_size,cam_size):
  
-        # See what cameras are available
+        # Uzu la unuan troveblan kameraon
         print pygame.camera.list_cameras()
-        # Which of those do you want to use?
         cam_choice = 0
 
-         # Instantiate and start camera object
-        # In the next line, you can also define the resolution
-        # I was happy with the default, so I did not enter that option
+        # Preparu la kameraon. 
+        # FARENDA: Che YUV mi fakte ne povis elekti la formaton, sed devas uzi tiun de la kamerao
+        # Do eble forigu _cam_size ele la argumentoj
         self.cam = pygame.camera.Camera(pygame.camera.list_cameras()[cam_choice],cam_size,"YUV")
-        # self.cam.rotation = 90
+
         #camera.exposure_mode = 'night'
         self.cam.start()
  
-        # Get camera size
+        # Formato de la kamera-bildo
         #size = cam.get_size()
  
-        # Surface to hold the camera frame
+        # Surfaco por akcepti la bildojn el la kamerao
         self.cam_surface = pygame.Surface(cam_size,depth=24)
         bpp = self.cam_surface.get_bytesize()
         print("cam byte size: "+str(bpp))
-        self.mirror = pygame.Surface(screen_size, depth=24)
-        # Make surface compliant with display
+
+        # Surfaco por akcepti poste la diferencbildon de movoj
+        self.projection = pygame.Surface(screen_size, depth=24)
+        # Konvertu laubezone al ekran-ecoj por plirapdigi montradon (blit) poste
 	if pygame.display.get_init():
           self.cam_surface = self.cam_surface.convert(24)
-          self.mirror = self.mirror.convert(24)
+          self.projection = self.projection.convert(24)
 
-        # Array to contain and display pixel brightness differences
+        # la procedo simplige estos tiel:
+        # kamerao -> cam_surface -> new_array - old_array -> blitting_array -> projection -> display
+
+        # Valoraro kun la helecdiferencoj poste uzata por la projekcio
         self.blitting_array = np.zeros((cam_size[0],cam_size[1],3),dtype=int)
  
-        # Array to keep track and plot the changes in image
-        #changes_length = 1000 # How many to store?
-        #changes = np.zeros(changes_length) #Preallocate array
-        #changes_plot_support = np.linspace(0,size[0],changes_length)
- 
-        # Container array for last frame pixel values
-        # The array3d returns a width*height*3 integer array
-        # By specifying the second argument (2), the mean is taken over
-        # the third dimension, i.e. the color channels
-
+        # Valoraro por memori la malnovajn helecerojn, preparu per la unua kamerabildo
+        self.cam_surface = self.cam.get_image(self.cam_surface)
         self.old_array = pygame.surfarray.pixels3d(self.cam_surface)[:,:,0]
         ###self.old_array = numpy.array(self.cam_surface.get_view('R'), copy=False)
         print self.old_array.dtype
 
         self.position = (0,0)
-        #self.screen_size = screen_size
+
 
     def get_diff(self):
-        if self.cam.query_image():
-            # If there is an image ready 'in' camera
+        """la procedo simplige estos tiel:
+        kamerao -> cam_surface -> new_array - old_array -> blitting_array -> projection -> display"""
 
-#            sleep(2)
-#            print self.cam_surface.get_locks()
+        if self.cam.query_image(): # chu estas bildo preta en la kamerao?
 
-            # Make surface from camera image
+            # Prenu bildon de kamerao en cam_surface kaj knovertu al valoraro
+            # La unua kanalo [...,0] de YUV estas la heleco 
             self.cam_surface = self.cam.get_image(self.cam_surface)
-
-#            test = pygame.surfarray.pixels3d(self.cam_surface)
-#            print test
- 
-            # Take mean across the three color channels (RGB).
-            # The pixels3d returns a width*height*3 integer array
-            # By specifying the second argument (2), the mean is taken over
-            # the third dimension, i.e. the color channels
-
             new_array = pygame.surfarray.pixels3d(self.cam_surface)[:,:,0]
-            ###new_array = pygame.surfarray.array3d(self.cam_surface)[:,:,0]
-            ###new_array = numpy.array(self.cam_surface.get_view('R'), copy=False)
 
+            # Char la valoroj estas uint8, t.e. 0..255 por diferenco ni bezonas
+            # valoraron kiu permesas ankaŭ negativajn nombroj (int8)
             diff = np.zeros(new_array.shape, dtype=np.int8)
             np.subtract(new_array,self.old_array,diff)
             
-           
-#            diff = np.absolute(new_array-self.old_array) # absolute differences
-#            diff = (new_array-self.old_array) # absolute differences
-
-            #diff = self.old_array
-
-#            print new_array
-#            print self.old_array
-#            print diff
-#            sys.exit(0)
-
-            # Store the current array as the old array for next frame
+            # Memoru la helecon en old_array por la sekva ciklo
             self.old_array = new_array.copy()
 
-            ###np.abs(diff,new_array)
-
-            # Make surface that displays the differences
+            # Ni devos nun plenigi chiujn tri kanalojn de RGB (ruĝa-verda-blua) surfaco
+            # per heleco por havi grizan bildon, flanke ni positivigas chiujn nombrojn
             for dd in [0,1,2]:
-                # Assign for all three color channels
-                #self.blitting_array[:,:,dd] = 255-diff
                 self.blitting_array[:,:,dd] = 255-np.abs(diff)
-#???
-#            self.blitting_array[:,:] = 255-diff
 
-            # Blit from array to the camera surface
+            # Bildigu la helecvalorojn al surfaco, uzighas cam_surface, 
+            # char ghi havas la taugan grandecon
             pygame.surfarray.blit_array(self.cam_surface,self.blitting_array)
-##            pygame.surfarray.blit_array(self.mirror,self.blitting_array)
 
-            #surface = self.mirror
-
-            # metu bildon sur la "ekranon"
-            ###self.temp = pygame.transform.rotate(self.cam_surface,90)
-            pygame.transform.scale(self.cam_surface,self.mirror.get_size(),self.mirror)
-##            pygame.transform.scale(self.cam_surface,self.mirror.get_size(),self.mirror)
-##            self.mirror = pygame.transform.rotozoom(self.cam_surface,90,2)
+            # adaptu la bildon por la "ekranon"
+            pygame.transform.scale(self.cam_surface,self.projection.get_size(),self.projection)
 
             return diff
 
     def get_values(self,rows,cols):
+        """prenu la valorojn de heleco por malgranda tabelo de valoroj,
+        necesas, ke diff antaŭ estis trairita por ke cam_surface enhavu diferencbildon"""
         scores = pygame.Surface((cols,rows),depth=24)
         pygame.transform.scale(self.cam_surface,scores.get_size(),scores)
         scores = pygame.transform.flip(scores,True,False)
@@ -139,7 +103,7 @@ class CamMoves(object):
         return values
        
     def blit(self,background):
-        #pygame.transform.scale(self.cam_surface,background.get_size(),background)
-        #background.blit(pygame.transform.flip(self.mirror,True,False), self.position)
-        background.blit(self.mirror, self.position)
+        """sendu la diferencbildon el projection al la ekranfono"""
+        #background.blit(self.projection, self.position)
+        background.blit(pygame.transform.flip(self.projection,True,False), self.position)
     

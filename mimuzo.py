@@ -16,7 +16,7 @@ from statfield import StaticField
 #from i_synth import Synth
 from i_synth_ctl2 import SynthCtl2
 from transmit import Transmitter
-from movado import CamMoves
+from movado_yuv import CamMoves
 
 if not pygame.font: print('Averto, tiparoj neaktivaj')
 if not pygame.mixer: print('Averto: sono malŝaltita')
@@ -29,11 +29,11 @@ height = 600
 width = 800
 
 # cam size
-#cam_size = (640,480)
-# cam_size = (320,240)
+#cam_size = (640,480) # necesas uzi tion por YUV (?)
+#cam_size = (320,240)
 cam_size = (160,120)
 
-frequence = 3 # kiom ofte en sekundo trakuri la tuton
+frequence = 10 # kiom ofte en sekundo trakuri la tuton
 
 def main():
     """ĉefa funkcio, kiu rulas ĉion"""
@@ -86,11 +86,11 @@ def main():
 
         diff = moves.get_diff()
         values = moves.get_values(rows,cols)
-        # print values
+        #print values
 
         fld.charge_all(values)
         fld.propagate_all()   
-        # fld.dump()
+        #fld.dump()
 
         for event in pygame.event.get():
             if event.type ==QUIT:
